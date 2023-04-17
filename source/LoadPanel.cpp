@@ -7,7 +7,10 @@ Foundation, either version 3 of the License, or (at your option) any later versi
 
 Endless Sky is distributed in the hope that it will be useful, but WITHOUT ANY
 WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include "LoadPanel.h"
@@ -349,8 +352,9 @@ bool LoadPanel::Click(int x, int y, int clicks)
 		for(const auto &it : filesIt->second)
 			if(i++ == selected)
 			{
+				const bool sameSelected = selectedFile == it.first;
 				selectedFile = it.first;
-				if(clicks > 1)
+				if(sameSelected && clicks > 1)
 					KeyDown('l', 0, Command(), true);
 				break;
 			}
@@ -412,6 +416,10 @@ void LoadPanel::UpdateLists()
 	vector<string> fileList = Files::List(Files::Saves());
 	for(const string &path : fileList)
 	{
+		// Skip any files that aren't text files.
+		if(path.compare(path.length() - 4, 4, ".txt"))
+			continue;
+
 		string fileName = Files::Name(path);
 		// The file name is either "Pilot Name.txt" or "Pilot Name~SnapshotTitle.txt".
 		size_t pos = fileName.find('~');

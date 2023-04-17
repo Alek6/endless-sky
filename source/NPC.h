@@ -7,7 +7,10 @@ Foundation, either version 3 of the License, or (at your option) any later versi
 
 Endless Sky is distributed in the hope that it will be useful, but WITHOUT ANY
 WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
 #ifndef NPC_H_
@@ -17,6 +20,7 @@ PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 #include "EsUuid.h"
 #include "ExclusiveItem.h"
 #include "Fleet.h"
+#include "FleetCargo.h"
 #include "LocationFilter.h"
 #include "Personality.h"
 #include "Phrase.h"
@@ -29,6 +33,7 @@ PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 class DataNode;
 class DataWriter;
 class Government;
+class MissionAction;
 class Planet;
 class PlayerInfo;
 class Ship;
@@ -53,9 +58,9 @@ public:
 	~NPC() noexcept = default;
 
 	// Construct and Load() at the same time.
-	NPC(const DataNode &node);
+	NPC(const DataNode &node, const std::string &missionName);
 
-	void Load(const DataNode &node);
+	void Load(const DataNode &node, const std::string &missionName);
 	// Note: the Save() function can assume this is an instantiated mission, not
 	// a template, so fleets will be replaced by individual ships already.
 	void Save(DataWriter &out) const;
@@ -74,6 +79,7 @@ public:
 	const std::list<std::shared_ptr<Ship>> Ships() const;
 
 	// Handle the given ShipEvent.
+	enum Trigger {KILL, BOARD, ASSIST, DISABLE, SCAN_CARGO, SCAN_OUTFITS, CAPTURE, PROVOKE};
 	void Do(const ShipEvent &event, PlayerInfo &player, UI *ui = nullptr, bool isVisible = true);
 	// Determine if the NPC is in a successful state, assuming the player is in the given system.
 	// (By default, a despawnable NPC has succeeded and is not actually checked.)
@@ -86,13 +92,23 @@ public:
 
 	// Create a copy of this NPC but with the fleets replaced by the actual
 	// ships they represent, wildcards in the conversation text replaced, etc.
-	NPC Instantiate(std::map<std::string, std::string> &subs, const System *origin, const System *destination) const;
+	NPC Instantiate(std::map<std::string, std::string> &subs, const System *origin, const System *destination,
+			int jumps, int64_t payload) const;
+
+
+private:
+	// Handle any NPC mission actions that may have been triggered by a ShipEvent.
+	void DoActions(const ShipEvent &event, bool newEvent, PlayerInfo &player, UI *ui = nullptr);
 
 
 private:
 	// The government of the ships in this NPC:
 	const Government *government = nullptr;
 	Personality personality;
+
+	// The cargo ships in this NPC will be able to carry.
+	FleetCargo cargo;
+	bool overrideFleetCargo = false;
 
 	EsUuid uuid;
 
@@ -133,7 +149,11 @@ private:
 	int failIf = 0;
 	bool mustEvade = false;
 	bool mustAccompany = false;
-	std::map<const Ship *, int> actions;
+	// The ShipEvent actions that have been done to each ship.
+	std::map<const Ship *, int> shipEvents;
+
+	// The MissionActions that this NPC can run on certain events/triggers.
+	std::map<Trigger, MissionAction> npcActions;
 };
 
 

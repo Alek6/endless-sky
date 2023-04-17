@@ -7,7 +7,10 @@ Foundation, either version 3 of the License, or (at your option) any later versi
 
 Endless Sky is distributed in the hope that it will be useful, but WITHOUT ANY
 WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
 #ifndef MINABLE_H_
@@ -36,17 +39,21 @@ class Visual;
 // ellipse around the system center.
 class Minable : public Body {
 public:
-	/* Inherited from Body:
-	Frame GetFrame(int step = -1) const;
-	const Mask &GetMask(int step = -1) const;
-	const Point &Position() const;
-	const Point &Velocity() const;
-	const Angle &Facing() const;
-	Point Unit() const; */
+	// Inherited from Body:
+	// Frame GetFrame(int step = -1) const;
+	// const Mask &GetMask(int step = -1) const;
+	// const Point &Position() const;
+	// const Point &Velocity() const;
+	// const Angle &Facing() const;
+	// Point Unit() const;
 
 	// Load a definition of a minable object.
 	void Load(const DataNode &node);
-	const std::string &Name() const;
+	// Calculate the expected payload value of this Minable after all outfits have been fully loaded.
+	void FinishLoading();
+	const std::string &TrueName() const;
+	const std::string &DisplayName() const;
+	const std::string &Noun() const;
 
 	// Place a minable object with up to the given energy level, on a random
 	// orbit and a random position along that orbit.
@@ -63,9 +70,16 @@ public:
 	// Determine what flotsam this asteroid will create.
 	const std::map<const Outfit *, int> &Payload() const;
 
+	// Get the expected value of the flotsams this minable will create when destroyed.
+	const int64_t &GetValue() const;
+
+	// Get hull remaining of this asteroid, as a fraction between 0 and 1.
+	double Hull() const;
 
 private:
 	std::string name;
+	std::string displayName;
+	std::string noun;
 	// Current angular position relative to the focus of the elliptical orbit,
 	// in radians. An angle of zero is the periapsis point.
 	double theta;
@@ -76,7 +90,7 @@ private:
 	double angularMomentum;
 	// Scale of the orbit. This is the orbital radius when theta is 90 degrees.
 	// The periapsis and apoapsis radii are scale / (1 +- eccentricity).
-	double scale;
+	double orbitScale;
 	// Rotation of the orbit - that is, the angle of periapsis - in radians.
 	double rotation;
 	// Rate of spin of the object.
@@ -98,6 +112,8 @@ private:
 	std::map<const Outfit *, int> payload;
 	// Explosion effects created when this object is destroyed.
 	std::map<const Effect *, int> explosions;
+	// The expected value of the payload of this minable.
+	int64_t value = 0.;
 };
 
 
