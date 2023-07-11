@@ -51,6 +51,7 @@ public:
 
 	// Overdue crew salaries:
 	int64_t CrewSalariesOwed() const;
+	int64_t SalariesOwed() const;
 	void PaySalaries(int64_t amount);
 	// Overdue maintenance costs:
 	int64_t MaintenanceDue() const;
@@ -82,6 +83,7 @@ private:
 	// than being ignored.
 	int64_t crewSalariesOwed = 0;
 	int64_t maintenanceDue = 0;
+	int64_t salariesIncome = 0;
 	// Your credit score determines the interest rate on your mortgages.
 	int creditScore = 400;
 

@@ -36,8 +36,8 @@ namespace {
 /** 
  *  Load account information from a data file (saved game or starting conditions).
  * 
- *  @param {const DataNode} &node: the node of account data (file)
- *  @param {bool clearFirst} clearFirst: value to check if the account already exists.
+ *  @param DataNode the node of account data (file)
+ *  @param clearFirst value to check if the account already exists.
  *  									 If does not exist set properties to default values (starting conditions). 
 */
 void Account::Load(const DataNode &node, bool clearFirst)
@@ -85,7 +85,7 @@ void Account::Load(const DataNode &node, bool clearFirst)
 /** 
  *  Write account information to a saved game file.
  *  
- *  @param {DataWriter} &out: standard output writer
+ *  @param out standard output writer
 */
 void Account::Save(DataWriter &out) const
 {
@@ -128,7 +128,7 @@ void Account::Save(DataWriter &out) const
 /** 
  *  How much the player currently has in the bank.
  *  
- *  @return {int64_t} credits: player's credits amount
+ *  @return credits: player's credits amount
 */
 int64_t Account::Credits() const
 {
@@ -142,7 +142,7 @@ int64_t Account::Credits() const
  *  
  *  @invariant If subtracting, the calling function needs to check that this will not result in negative credits.
  *  REQUIRE: value be non negative
- *  @param {int64_t} value: amount of credits
+ *  @param value amount of credits
 */
 void Account::AddCredits(int64_t value)
 {
@@ -161,8 +161,8 @@ void Account::AddCredits(int64_t value)
  * 
  *  @invariant the current mortgage of an account must be less than credits (mortgage < amount)
  *  REQUIRE: mortgage < mortgages.size(), amount < credits, amount < mprtgages[mortgage]
- *  @param {int} mortgage: the current mortgage
- *  @param {int64_t} amount: the new extra amount to pay 
+ *  @param mortgage the current mortgage
+ *  @param amount the new extra amount to pay 
 */
 void Account::PayExtra(int mortgage, int64_t amount)
 {
@@ -184,9 +184,9 @@ void Account::PayExtra(int mortgage, int64_t amount)
 /** 
  *  Step forward one day, and return a string summarizing payments made.
  *
- *  @param {int64_t} assets: the assets interested into the payment
- *  @param {int64_t} salaries: the updated owed salaries
- *  @param {int64_t} maintenance: the maintenance due time
+ *  @param assets the assets interested into the payment
+ *  @param salaries the updated owed salaries
+ *  @param maintenance the maintenance due time
  *  @return out: the output string in case that the Palyer can't pay the full salary amount OR
  * 				 the maintenance costs OR the mortgage amount,
  * 				 OTHERWISE
@@ -340,7 +340,7 @@ string Account::Step(int64_t assets, int64_t salaries, int64_t maintenance)
 /**
  *  Returns the current owed salaries.
  * 
- *  @return {int64_t} salariesOwed: the current owed salaries
+ *  @return salariesOwed: the current owed salaries
  */
 int64_t Account::SalariesOwed() const
 {
@@ -351,7 +351,7 @@ int64_t Account::SalariesOwed() const
 /**
  *  Updates the salaries on payment after the completion of a mission.
  * 
- *  @param {int64_t} amount: the amount to pay on mission complete 
+ *  @param amount the amount to pay on mission complete 
  */
 void Account::PaySalaries(int64_t amount)
 {
@@ -364,7 +364,7 @@ void Account::PaySalaries(int64_t amount)
 /**
  *  Returns the maintenance due time.
  * 
- *  @return {int64_t} maintenanceDue: the maintenance due time
+ *  @return maintenanceDue: the maintenance due time
  */
 int64_t Account::MaintenanceDue() const
 {
@@ -375,7 +375,7 @@ int64_t Account::MaintenanceDue() const
 /**
  *  Updates the maintenance payment after the completion of the maintenance of a ship.
  * 
- *  @param {int64_t} amount: the amount to pay for the maintenance
+ *  @param amount the amount to pay for the maintenance
  */
 void Account::PayMaintenance(int64_t amount)
 {
@@ -389,7 +389,7 @@ void Account::PayMaintenance(int64_t amount)
 /** 
  *  Access the list of mortgages.
  * 
- *  @return {vector<Mortgage>} mortgages: the list of mortgages
+ *  @return mortgages: the list of mortgages
 */
 const vector<Mortgage> &Account::Mortgages() const
 {
@@ -402,7 +402,7 @@ const vector<Mortgage> &Account::Mortgages() const
  *  Add a new mortgage for the given amount, with an interest rate determined by 
  *  your credit score. 
  * 
- *  @param {int64_t} principal: the given amount of mortgage to add 
+ *  @param principal the given amount of mortgage to add 
 */
 void Account::AddMortgage(int64_t principal)
 {
@@ -415,7 +415,7 @@ void Account::AddMortgage(int64_t principal)
 /** 
  *  Add a "fine" with a high, fixed interest rate and a short term.
  * 
- *  @param {int64_t} amount: the amount of fine to add
+ *  @param amount the amount of fine to add
 */
 void Account::AddFine(int64_t amount)
 {
@@ -427,7 +427,7 @@ void Account::AddFine(int64_t amount)
 /** 
  *  Check how big a mortgage the player can afford to pay at their current income.
  * 
- *  @return {int64_t} prequalified mortgage to pay
+ *  @return prequalified mortgage to pay
 */
 int64_t Account::Prequalify() const
 {
@@ -452,7 +452,7 @@ int64_t Account::Prequalify() const
 /** 
  *  Get the player's total net worth (counting all ships and all debts).
  *  
- *  @return {int64_t} the net worth total OR 0.
+ *  @return the net worth total OR 0.
 */
 int64_t Account::NetWorth() const
 {
@@ -464,7 +464,7 @@ int64_t Account::NetWorth() const
 /** 
  *  Find out the player's credit rating.
  * 
- *  @return {int} creditScore: the player's credit score
+ *  @return creditScore: the player's credit score
 */
 int Account::CreditScore() const
 {
@@ -476,8 +476,8 @@ int Account::CreditScore() const
 /**
  *  Get the total amount owed for "Mortgage", "Fine", or both.
  * 
- *  @param {const string} &type: the debt's type
- *  @return {int64_t} total: the total debt depending on type
+ *  @param type the debt's type
+ *  @return total: the total debt depending on type
 */
 int64_t Account::TotalDebt(const string &type) const
 {
@@ -495,7 +495,7 @@ int64_t Account::TotalDebt(const string &type) const
  *  Extrapolate from the player's current net worth history to determine how much
  *  their net worth is expected to change over the course of the next year.
  * 
- *  @return {int64_t} yearly revenue amount depending the accumulated income history
+ *  @return yearly revenue amount depending the accumulated income history
 */
 int64_t Account::YearlyRevenue() const
 {
